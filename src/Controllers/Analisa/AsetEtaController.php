@@ -25,7 +25,7 @@ class AsetEtaController extends Controller
         $endDate = Carbon::createFromFormat('Y-m', $endDate);
 
         $data = [
-            'periode'    => [],
+            'period'    => [],
             'aset'       => [],
             'ekuitas'    => []
         ];
@@ -80,11 +80,11 @@ class AsetEtaController extends Controller
             array_push($data['ekuitas'], ($ekuitas->saldo_akhir / 1000));
         
             if ($type === 'month') {
-                array_push($data['periode'], $startDate->format('M y'));
+                array_push($data['period'], $startDate->format('M y'));
                 // increment time
                 $startDate = $startDate->addMonth();
             } elseif ($type === 'year') {
-                array_push($data['periode'], $startDate->format('Y'));
+                array_push($data['period'], $startDate->format('Y'));
                 // increment time
                 $startDate = $startDate->addYear();
             }
