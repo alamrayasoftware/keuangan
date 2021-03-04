@@ -7,7 +7,20 @@ use ArsoftModules\Keuangan\Controllers\Analisa\CashflowController;
 use Exception;
 
 class Keuangan {
-    private $result;
+    private $status = 'success', $data, $errorMessage;
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    public function getData()
+    {
+        return $this->data;
+    }
+    public function getErrorMessage()
+    {
+        return $this->errorMessage;
+    }
 
     /**
      * @param string $position
@@ -32,12 +45,14 @@ class Keuangan {
         );
 
         if ($report['status'] !== 'success') {
-            return $this->errorData($report['message']);
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
         }
 
-        $this->result = $report['data'];
+        $this->data = $report['data'];
 
-        return $this->successData();
+        return $this;
     }
 
     /**
@@ -63,7 +78,9 @@ class Keuangan {
         );
 
         if ($report['status'] !== 'success') {
-            return $this->errorData($report['message']);
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
         }
 
         $tempData = [
@@ -71,26 +88,8 @@ class Keuangan {
             'note' => $report['keterangan'],
             'report' => $report['data']
         ];
-        $this->result = $tempData;
+        $this->data = $tempData;
 
-        return $this->successData();
-    }
-
-    private function successData()
-    {
-        $tempData = [
-            'status' => 'success',
-            'data' => $this->result
-        ];
-        return $tempData;
-    }
-
-    private function errorData($message)
-    {
-        $tempData = [
-            'status' => 'error',
-            'message' => $message
-        ];
-        return $tempData;
+        return $this;
     }
 }
