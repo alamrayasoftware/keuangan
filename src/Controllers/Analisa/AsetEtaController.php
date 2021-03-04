@@ -89,7 +89,10 @@ class AsetEtaController extends Controller
                 $startDate = $startDate->addYear();
             }
         }
-
-        return $data;
+        
+        return [
+            'status' => 'success',
+            'data' => $data
+        ];
     }
 }
