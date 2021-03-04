@@ -15,5 +15,12 @@
         "psr-4": {
             "ArsoftModules\\Keuangan\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ArsoftModules\\Keuangan\\KeuanganServiceProvider"
+            ]
+        }
     }
 }
