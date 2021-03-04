@@ -292,6 +292,16 @@ class CashflowController extends Controller
 
                 array_push($periodDate, $val->format('M Y'));
             }
+        } elseif ($type === 'year') {
+            return [
+                'status' => 'error',
+                'message' => 'Saat ini belum mendukung laporan jenis tahunan !'
+            ];
+        } else {
+            return [
+                'status' => 'error',
+                'message' => 'Jenis laporan tidak didukung, saat ini hanya mendukung jenis bulanan !'
+            ];
         }
 
         return [
