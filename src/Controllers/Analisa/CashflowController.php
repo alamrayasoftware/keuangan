@@ -35,14 +35,14 @@ class CashflowController extends Controller
             }
 
             $dateInterval = new DateInterval('P1M');
-            $periode = new DatePeriod($startDate, $dateInterval, $endDate->addMonth());
+            $period = new DatePeriod($startDate, $dateInterval, $endDate->addMonth());
 
             $listPeriode = [];
-            foreach ($periode as $key => $date) {
+            foreach ($period as $key => $date) {
                 array_push($listPeriode, $date->startOfMonth());
             }
 
-            $perioDate    = [];
+            $periodDate    = [];
             $keterangan   = [];
             $data         = [
                 'saldo' => [],
@@ -290,15 +290,14 @@ class CashflowController extends Controller
                 array_push($data['fcf_in'], $fcf_in);
                 array_push($data['fcf_out'], $fcf_out);
 
-                array_push($perioDate, $val->format('M Y'));
+                array_push($periodDate, $val->format('M Y'));
             }
-            
         }
 
         return [
             'status' => 'success',
             'data' => $data,
-            'periode' => $perioDate,
+            'period' => $periodDate,
             'keterangan' => $keterangan
         ];
     }

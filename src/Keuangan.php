@@ -3,6 +3,7 @@
 namespace ArsoftModules\Keuangan;
 
 use ArsoftModules\Keuangan\Controllers\Analisa\AsetEtaController;
+use ArsoftModules\Keuangan\Controllers\Analisa\CashflowController;
 use Exception;
 
 class Keuangan {
@@ -35,6 +36,42 @@ class Keuangan {
         }
 
         $this->result = $report['data'];
+
+        return $this->successData();
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $startDate date_format: Y-m
+     * @param string $endDate date_format: Y-m
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportCashflow(
+        string $position,
+        string $startDate,
+        string $endDate,
+        string $type = 'month'
+    )
+    {
+        $cashflow = new CashflowController();
+
+        $report = $cashflow->data(
+            $position,
+            $startDate,
+            $endDate,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            return $this->errorData($report['message']);
+        }
+
+        $tempData = [
+            'period' => $report['period'],
+            'note' => $report['keterangan'],
+            'report' => $report['data']
+        ];
+        $this->result = $tempData;
 
         return $this->successData();
     }
