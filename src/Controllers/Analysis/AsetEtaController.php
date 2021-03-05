@@ -1,6 +1,6 @@
 <?php
 
-namespace ArsoftModules\Keuangan\Controllers\Analisa;
+namespace ArsoftModules\Keuangan\Controllers\Analysis;
 
 use ArsoftModules\Keuangan\Controllers\Controller;
 use Illuminate\Support\Carbon;

@@ -2,9 +2,9 @@
 
 namespace ArsoftModules\Keuangan;
 
-use ArsoftModules\Keuangan\Controllers\Analisa\AsetEtaController;
-use ArsoftModules\Keuangan\Controllers\Analisa\CashflowController;
-use ArsoftModules\Keuangan\Controllers\Analisa\CommonSizeController;
+use ArsoftModules\Keuangan\Controllers\Analysis\AsetEtaController;
+use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
+use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
 use stdClass;
 
 class Keuangan {
