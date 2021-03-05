@@ -25,9 +25,9 @@ class AsetEtaController extends Controller
         $endDate = Carbon::createFromFormat('Y-m', $endDate);
 
         $data = [
-            'period'    => [],
-            'aset'       => [],
-            'ekuitas'    => []
+            'period' => [],
+            'aset' => [],
+            'ekuitas' => []
         ];
 
         while ($startDate <= $endDate) {
@@ -92,7 +92,9 @@ class AsetEtaController extends Controller
         
         return [
             'status' => 'success',
-            'data' => $data
+            'periods' => $data['period'],
+            'assets' => $data['aset'],
+            'equities' => $data['ekuitas']
         ];
     }
 }

@@ -4,7 +4,8 @@ namespace ArsoftModules\Keuangan;
 
 use ArsoftModules\Keuangan\Controllers\Analisa\AsetEtaController;
 use ArsoftModules\Keuangan\Controllers\Analisa\CashflowController;
-use Exception;
+use ArsoftModules\Keuangan\Controllers\Analisa\CommonSizeController;
+use stdClass;
 
 class Keuangan {
     private $status = 'success', $data, $errorMessage;
@@ -50,7 +51,12 @@ class Keuangan {
             return $this;
         }
 
-        $this->data = $report['data'];
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->assets = $report['assets'];
+        $tempData->equities = $report['equities'];
+
+        $this->data = $tempData;
 
         return $this;
     }
@@ -83,11 +89,50 @@ class Keuangan {
             return $this;
         }
 
-        $tempData = [
-            'period' => $report['period'],
-            'note' => $report['keterangan'],
-            'report' => $report['data']
-        ];
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->notes = $report['notes'];
+        $tempData->cashflow = $report['cashflow'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $startDate date_format: Y-m
+     * @param string $endDate date_format: Y-m
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportCommonSize(
+        string $position,
+        string $startDate,
+        string $endDate,
+        string $type = 'month'
+    )
+    {
+        $commonSize = new CommonSizeController();
+
+        $report = $commonSize->data(
+            $position,
+            $startDate,
+            $endDate,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->accounts = $report['accounts'];
+        $tempData->balance_sheet = $report['balance_sheet'];
+        $tempData->profit_and_loss = $report['profit_and_loss'];
+        
         $this->data = $tempData;
 
         return $this;

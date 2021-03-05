@@ -306,9 +306,9 @@ class CashflowController extends Controller
 
         return [
             'status' => 'success',
-            'data' => $data,
-            'period' => $periodDate,
-            'keterangan' => $keterangan
+            'periods' => $periodDate,
+            'notes' => $keterangan,
+            'cashflow' => $data
         ];
     }
 }

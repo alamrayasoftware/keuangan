@@ -340,10 +340,10 @@ class CommonSizeController extends Controller
 
         return [
             'status' => 'success',
-            'neraca' => $neraca,
-            'labarugi' => $labarugi,
-            'akun' => $akun,
-            'periode'=> $periodDate
+            'balance_sheet' => $neraca,
+            'profit_and_loss' => $labarugi,
+            'accounts' => $akun,
+            'periods'=> $periodDate
         ];
     }
 }
