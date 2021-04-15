@@ -137,7 +137,6 @@ class Keuangan {
     }
 
     /**
-     * @param string $position position id
      * @param string $startDate date_format: Y-m
      * @param string $endDate date_format: Y-m
      * @param string $type opt : 'month', 'year'

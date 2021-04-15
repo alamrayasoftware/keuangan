@@ -1,12 +1,16 @@
 {
     "name": "arsoft-modules/keuangan",
-    "description": "modul untuk mengelola data keuangan mulai dari penjurnalan, akun keuangan, hingga laporan-laporan terkait keuangan",
+    "description": "modul untuk mengelola data keuangan mulai dari proses jurnal, kelola akun keuangan, hingga laporan dan analisa terkait keuangan",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "Kalingrowo",
             "email": "kalingrowo@gmail.com"
+        },
+        {
+            "name": "Developer Arsoft",
+            "email": "developer.arsoft@gmail.com"
         }
     ],
     "minimum-stability": "dev",

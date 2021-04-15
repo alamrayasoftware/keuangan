@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 class NetProfitOcfController extends Controller
 {
     /**
-     * @param string $position
      * @param string $startDate date_format: Y-m
      * @param string $endDate date_format: Y-m
      * @param string $type opt : 'month', 'year'
