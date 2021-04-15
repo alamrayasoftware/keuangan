@@ -5,6 +5,7 @@ namespace ArsoftModules\Keuangan;
 use ArsoftModules\Keuangan\Controllers\Analysis\AsetEtaController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
+use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
 use stdClass;
 
 class Keuangan {
@@ -34,8 +35,7 @@ class Keuangan {
         string $startDate,
         string $endDate,
         string $type = 'month'
-    )
-    {
+    ) {
         $asetEta = new AsetEtaController();
 
         $report = $asetEta->data(
@@ -72,8 +72,7 @@ class Keuangan {
         string $startDate,
         string $endDate,
         string $type = 'month'
-    )
-    {
+    ) {
         $cashflow = new CashflowController();
 
         $report = $cashflow->data(
@@ -110,8 +109,7 @@ class Keuangan {
         string $startDate,
         string $endDate,
         string $type = 'month'
-    )
-    {
+    ) {
         $commonSize = new CommonSizeController();
 
         $report = $commonSize->data(
@@ -133,6 +131,41 @@ class Keuangan {
         $tempData->balance_sheet = $report['balance_sheet'];
         $tempData->profit_and_loss = $report['profit_and_loss'];
         
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $startDate date_format: Y-m
+     * @param string $endDate date_format: Y-m
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportNetProfitOcf(
+        string $startDate,
+        string $endDate,
+        string $type = 'month'
+    ) {
+        $netProfitOcf = new NetProfitOcfController();
+
+        $report = $netProfitOcf->data(
+            $startDate,
+            $endDate,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->ocf = $report['ocf'];
+        $tempData->net_profit = $report['net_profit'];
+
         $this->data = $tempData;
 
         return $this;
