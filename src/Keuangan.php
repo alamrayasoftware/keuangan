@@ -5,6 +5,7 @@ namespace ArsoftModules\Keuangan;
 use ArsoftModules\Keuangan\Controllers\Analysis\AsetEtaController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
+use ArsoftModules\Keuangan\Controllers\Analysis\LiquidityRatioController;
 use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
 use stdClass;
 
@@ -164,6 +165,42 @@ class Keuangan {
         $tempData->periods = $report['periods'];
         $tempData->ocf = $report['ocf'];
         $tempData->net_profit = $report['net_profit'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $startDate date_format: Y-m
+     * @param string $endDate date_format: Y-m
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportLiquidityRatio(
+        string $position,
+        string $startDate,
+        string $endDate,
+        string $type = 'month'
+    ) {
+        $liquidityRatio = new LiquidityRatioController();
+
+        $report = $liquidityRatio->data(
+            $position,
+            $startDate,
+            $endDate,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->liquidity_ratio = $report['data'];
 
         $this->data = $tempData;
 
