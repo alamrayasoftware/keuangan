@@ -7,6 +7,7 @@ use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
 use ArsoftModules\Keuangan\Controllers\Analysis\LiquidityRatioController;
 use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
+use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
 use stdClass;
 
 class Keuangan {
@@ -201,6 +202,45 @@ class Keuangan {
         $tempData = new stdClass();
         $tempData->periods = $report['periods'];
         $tempData->liquidity_ratio = $report['data'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $startDate date_format: Y-m-d
+     * @param string $endDate date_format: Y-m-d
+     * @param string $type opt : 'general', 'cash', 'memorial'
+     */
+    public function reportJournal(
+        string $position,
+        string $startDate,
+        string $endDate,
+        string $type = 'general'
+    ) {
+        $journal = new JournalController();
+
+        $report = $journal->data(
+            $position,
+            $startDate,
+            $endDate,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->type = $report['type'];
+        $tempData->journals = $report['data'];
+        $tempData->debit_final = $report['debit_final'];
+        $tempData->credit_final = $report['credit_final'];
 
         $this->data = $tempData;
 
