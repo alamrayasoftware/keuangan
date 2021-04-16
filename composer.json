@@ -14,7 +14,9 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "require": {
+        "awobaz/compoships": "^2.1"
+    },
     "autoload": {
         "psr-4": {
             "ArsoftModules\\Keuangan\\": "src/"
