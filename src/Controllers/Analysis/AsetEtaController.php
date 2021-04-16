@@ -3,8 +3,8 @@
 namespace ArsoftModules\Keuangan\Controllers\Analysis;
 
 use ArsoftModules\Keuangan\Controllers\Controller;
+use ArsoftModules\Keuangan\Models\FinanceAccount;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class AsetEtaController extends Controller
 {
@@ -26,58 +26,42 @@ class AsetEtaController extends Controller
 
         $data = [
             'period' => [],
-            'aset' => [],
-            'ekuitas' => []
+            'assets' => [],
+            'equities' => []
         ];
 
         while ($startDate <= $endDate) {
-            $aset = DB::table('dk_akun')
-                ->leftJoin('dk_akun_saldo', 'dk_akun_saldo.as_akun', 'dk_akun.ak_id');
+            $year = $startDate->format('Y');
+            $month = $startDate->format('m');
 
-            $ekuitas = DB::table('dk_akun')
-                ->where('ak_comp', $position)
-                ->leftJoin('dk_akun_saldo', 'dk_akun_saldo.as_akun', 'dk_akun.ak_id');
+            $assets = FinanceAccount::active();
+            $equities = FinanceAccount::active();
 
-            if ($type === 'month') {
-                $aset = $aset->where(function ($q) use ($startDate) {
-                    $q->whereYear('as_periode', $startDate)
-                    ->whereMonth('as_periode', $startDate);
-                });
-                $ekuitas = $ekuitas->where(function ($q) use ($startDate) {
-                    $q->whereYear('as_periode', $startDate)
-                    ->whereMonth('as_periode', $startDate);
-                });
-            } elseif ($type === 'year') {
-                $aset = $aset->where(function ($q) use ($startDate) {
-                    $q->whereYear('as_periode', $startDate);
-                });
-                $ekuitas = $ekuitas->where(function ($q) use ($startDate) {
-                    $q->whereYear('as_periode', $startDate);
-                });
-            }
-            
-            $aset = $aset->where('ak_kelompok', 16)
-                ->where('ak_isactive', '1')
-                ->select(
-                    DB::raw('coalesce(sum(as_saldo_awal), 0) as saldo_awal'),
-                    DB::raw('coalesce(sum(as_mut_kas_debet + as_trans_kas_debet + as_trans_memorial_debet), 0) as penambahan'),
-                    DB::raw('coalesce(sum(as_mut_kas_kredit + as_trans_kas_kredit + as_trans_memorial_kredit), 0) as pengurangan'),
-                    DB::raw('coalesce(sum(as_saldo_akhir), 0) as saldo_akhir')
-                )
-                ->first();
+            $assets = $assets->whereHas('balanceAccounts', function ($q) use ($type, $year, $month) {
+                    $q->filterYear($year);
+                    ($type === 'month') 
+                        ? $q->filterMonth($month)
+                        : '';
+                })
+                ->groupId(16)
+                ->loadClosingBalanceTotal($type, $year, $month)
+                ->get();
+            $assetsClosingBalanceTotal = $assets->sum('closing_balance_total');
 
-            $ekuitas = $ekuitas->where(DB::raw('substring(ak_nomor, 1, 1)'), '3')
-                ->where('ak_isactive', '1')
-                ->select(
-                    DB::raw('coalesce(sum(as_saldo_awal), 0) as saldo_awal'),
-                    DB::raw('coalesce(sum(as_mut_kas_kredit + as_trans_kas_kredit + as_trans_memorial_kredit), 0) as penambahan'),
-                    DB::raw('coalesce(sum(as_mut_kas_debet + as_trans_kas_debet + as_trans_memorial_debet), 0) as pengurangan'),
-                    DB::raw('coalesce(sum(as_saldo_akhir), 0) as saldo_akhir')
-                )
-                ->first();
+            $equities = $equities->whereHas('balanceAccounts', function ($q) use ($type, $year, $month) {
+                    $q->filterYear($year);
+                    ($type === 'month')
+                        ? $q->filterMonth($month)
+                        : '';
+                })
+                ->position($position)
+                ->substrNomor(3)
+                ->loadClosingBalanceTotal($type, $year, $month)
+                ->get();
+            $equitiesClosingBalanceTotal = $equities->sum('closing_balance_total');
 
-            array_push($data['aset'], $aset->saldo_akhir / 1000);
-            array_push($data['ekuitas'], ($ekuitas->saldo_akhir / 1000));
+            array_push($data['assets'], ($assetsClosingBalanceTotal / 1000));
+            array_push($data['equities'], ($equitiesClosingBalanceTotal / 1000));
         
             if ($type === 'month') {
                 array_push($data['period'], $startDate->format('M y'));
@@ -93,8 +77,8 @@ class AsetEtaController extends Controller
         return [
             'status' => 'success',
             'periods' => $data['period'],
-            'assets' => $data['aset'],
-            'equities' => $data['ekuitas']
+            'assets' => $data['assets'],
+            'equities' => $data['equities']
         ];
     }
 }

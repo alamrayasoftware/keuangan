@@ -27,7 +27,7 @@ class Journal extends Model
         $q->withCount(['details as debit_total' => function ($q) {
             $q->where('jrdt_dk', 'D')
                 ->select(
-                    DB::raw('SUM(jrdt_value)')
+                    DB::raw('COALESCE(SUM(jrdt_value), 0)')
                 )
                 ->groupBy('jrdt_jurnal');
         }]);
@@ -40,7 +40,7 @@ class Journal extends Model
         $q->withCount(['details as credit_total' => function ($q) {
             $q->where('jrdt_dk', 'K')
                 ->select(
-                    DB::raw('SUM(jrdt_value)')
+                    DB::raw('COALESCE(SUM(jrdt_value), 0)')
                 )
                 ->groupBy('jrdt_jurnal');
         }]);
