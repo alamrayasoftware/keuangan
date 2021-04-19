@@ -3,6 +3,7 @@
 namespace ArsoftModules\Keuangan\Controllers\Reports;
 
 use ArsoftModules\Keuangan\Controllers\Controller;
+use ArsoftModules\Keuangan\Helpers\ProfitBalance;
 use ArsoftModules\Keuangan\Models\HierarchyOne;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -64,7 +65,7 @@ class BalanceSheetController extends Controller {
             )
             ->get();
 
-        $profitBalance = 0;
+        $profitBalance = ProfitBalance::data($date, $type);
 
         return [
             'status' => 'success',
