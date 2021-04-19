@@ -7,6 +7,7 @@ use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
 use ArsoftModules\Keuangan\Controllers\Analysis\LiquidityRatioController;
 use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
+use ArsoftModules\Keuangan\Controllers\Reports\BalanceSheetController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
 use stdClass;
 
@@ -241,6 +242,41 @@ class Keuangan {
         $tempData->journals = $report['data'];
         $tempData->debit_final = $report['debit_final'];
         $tempData->credit_final = $report['credit_final'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position id
+     * @param string $date date_format: Y-m-d
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportBalanceSheet(
+        string $position,
+        string $date,
+        string $type = 'month'
+    ) {
+        $balanceSheets = new BalanceSheetController();
+
+        $report = $balanceSheets->data(
+            $position,
+            $date,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->type = $report['type'];
+        $tempData->balance_sheet = $report['data'];
+        $tempData->profit_balance = $report['profit_balance'];
 
         $this->data = $tempData;
 
