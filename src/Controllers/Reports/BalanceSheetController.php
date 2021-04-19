@@ -14,7 +14,6 @@ class BalanceSheetController extends Controller {
      * @param string $type option: 'general', 'cash', 'memorial'
      */
     public function data(
-        string $position,
         string $date,
         string $type
     ) {

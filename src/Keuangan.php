@@ -254,14 +254,12 @@ class Keuangan {
      * @param string $type opt : 'month', 'year'
      */
     public function reportBalanceSheet(
-        string $position,
         string $date,
         string $type = 'month'
     ) {
         $balanceSheets = new BalanceSheetController();
 
         $report = $balanceSheets->data(
-            $position,
             $date,
             $type
         );
