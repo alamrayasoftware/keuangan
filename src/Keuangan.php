@@ -7,6 +7,7 @@ use ArsoftModules\Keuangan\Controllers\Analysis\CashflowController;
 use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
 use ArsoftModules\Keuangan\Controllers\Analysis\LiquidityRatioController;
 use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
+use ArsoftModules\Keuangan\Controllers\Analysis\ReturnEquityController;
 use ArsoftModules\Keuangan\Controllers\Reports\BalanceSheetController;
 use ArsoftModules\Keuangan\Controllers\Reports\IncomeStatementController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
@@ -210,6 +211,38 @@ class Keuangan {
 
         return $this;
     }
+
+    /**
+     * @param string $year date_format: Y
+     */
+    public function reportReturnEquity(
+        string $year
+    ) {
+        $returnEquity = new ReturnEquityController();
+
+        $report = $returnEquity->data(
+            $year
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->total = $report['total'];
+        $tempData->expenses = $report['expenses'];
+        $tempData->assets = $report['assets'];
+        $tempData->current_assets = $report['current_assets'];
+        $tempData->fixed_assets = $report['fixed_assets'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
 
     /**
      * @param string $position position id
