@@ -16,6 +16,12 @@ class FinanceAccount extends Model
         return $this->hasMany('ArsoftModules\Keuangan\Models\BalanceAccount', 'as_akun', 'ak_id');
     }
 
+    public function journalDetails()
+    {
+        return $this->hasMany('ArsoftModules\Keuangan\Models\JournalDetail', 'jrdt_akun', 'ak_id');
+    }
+
+
     /**
      * load total initial-balance ( saldo-awal )
      */

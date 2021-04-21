@@ -13,4 +13,8 @@ class HierarchyOne extends Model
     {
         return $this->hasMany('ArsoftModules\Keuangan\Models\HierarchySubClass', 'hs_level_1', 'hs_id');
     }
+    public function hierarchyTwo()
+    {
+        return $this->hasMany('ArsoftModules\Keuangan\Models\HierarchyTwo', 'hd_level_1', 'hs_id');
+    }
 }

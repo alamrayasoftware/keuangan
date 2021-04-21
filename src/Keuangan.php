@@ -10,6 +10,7 @@ use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
 use ArsoftModules\Keuangan\Controllers\Reports\BalanceSheetController;
 use ArsoftModules\Keuangan\Controllers\Reports\IncomeStatementController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
+use ArsoftModules\Keuangan\Controllers\Reports\LedgerReportController;
 use stdClass;
 
 class Keuangan {
@@ -306,6 +307,39 @@ class Keuangan {
         $tempData->periods = $report['periods'];
         $tempData->type = $report['type'];
         $tempData->income_statement = $report['data'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $position position-id
+     * @param int $groupId group-id
+     * @param string $date date_format: Y-m-d
+     */
+    public function reportLedger(
+        string $position,
+        int $groupId,
+        string $date
+    ) {
+        $ledgerReport = new LedgerReportController();
+
+        $report = $ledgerReport->data(
+            $position, 
+            $groupId,
+            $date
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->ledger_report = $report['data'];
 
         $this->data = $tempData;
 
