@@ -8,6 +8,7 @@ use ArsoftModules\Keuangan\Controllers\Analysis\CommonSizeController;
 use ArsoftModules\Keuangan\Controllers\Analysis\LiquidityRatioController;
 use ArsoftModules\Keuangan\Controllers\Analysis\NetProfitOcfController;
 use ArsoftModules\Keuangan\Controllers\Reports\BalanceSheetController;
+use ArsoftModules\Keuangan\Controllers\Reports\IncomeStatementController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
 use stdClass;
 
@@ -249,7 +250,6 @@ class Keuangan {
     }
 
     /**
-     * @param string $position position id
      * @param string $date date_format: Y-m-d
      * @param string $type opt : 'month', 'year'
      */
@@ -275,6 +275,37 @@ class Keuangan {
         $tempData->type = $report['type'];
         $tempData->balance_sheet = $report['data'];
         $tempData->profit_balance = $report['profit_balance'];
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
+    /**
+     * @param string $date date_format: Y-m-d
+     * @param string $type opt : 'month', 'year'
+     */
+    public function reportIncomeStatement(
+        string $date,
+        string $type = 'month'
+    ) {
+        $incomeStatement = new IncomeStatementController();
+
+        $report = $incomeStatement->data(
+            $date,
+            $type
+        );
+
+        if ($report['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $report['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->periods = $report['periods'];
+        $tempData->type = $report['type'];
+        $tempData->income_statement = $report['data'];
 
         $this->data = $tempData;
 

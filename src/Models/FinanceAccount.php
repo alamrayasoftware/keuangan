@@ -48,6 +48,21 @@ class FinanceAccount extends Model
         }]);
     }
     /**
+     * load total closing-balance ( saldo-akhir )
+     */
+    public function scopeLoadClosingWithInitialBalanceTotal($q, $type, $year, $month = null)
+    {
+        $q->withCount(['balanceAccounts as closing_with_initial_balance_total' => function ($q) use ($type, $year, $month) {
+            $q->filterYear($year);
+            ($type === 'month')
+                ? $q->filterMonth($month)
+                : '';
+            $q->select(
+                DB::raw('COALESCE((as_saldo_akhir - as_saldo_awal), 0)')
+            );
+        }]);
+    }
+    /**
      * load total increment ( penambahan )
      */
     public function scopeLoadIncrementTotal($q, $type, $year, $month = null)
