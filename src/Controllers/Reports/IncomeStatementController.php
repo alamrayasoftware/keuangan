@@ -18,6 +18,10 @@ class IncomeStatementController extends Controller {
         $date = Carbon::parse($date);
 
         $datas = HierarchyOne::where('hs_id', '>', 3)
+            ->select(
+                'hs_id',
+                'hs_nama'
+            )
             ->with(['hierarchySubClass' => function ($q) use ($type, $date) {
                 $q->select(
                     'hs_id',
@@ -54,10 +58,6 @@ class IncomeStatementController extends Controller {
                 }])
                 ->orderBy('hs_flag');
             }])
-            ->select(
-                'hs_id',
-                'hs_nama'
-            )
             ->get();
 
         foreach ($datas as $i => $data) {
