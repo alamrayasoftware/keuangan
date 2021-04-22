@@ -244,7 +244,7 @@ class ReturnEquityController extends Controller
 
         $tempVal = $tangible->sum('closing_balance_total');
 
-        $currentAssets['tangible'] = $tempVal;
+        $fixedAssets['tangible'] = $tempVal;
         $assets['fixed_assets'] += (float) $tempVal;
 
         $intangible = FinanceAccount::whereIn('ak_kelompok', function($q) {
@@ -266,7 +266,7 @@ class ReturnEquityController extends Controller
         $tempCreditTotal = $intangible->where('ak_posisi', 'K')->sum('closing_balance_total') * -1;
         $tempVal = ($tempDebitTotal + $tempCreditTotal);
 
-        $currentAssets['intangible'] = $tempVal;
+        $fixedAssets['intangible'] = $tempVal;
         $assets['fixed_assets'] += (float) $tempVal;
 
         $total['assets'] = ($assets['fixed_assets'] + $assets['current_assets']);
