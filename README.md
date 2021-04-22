@@ -1,8 +1,8 @@
 # Keuangan
 
-Modul untuk mengelola data keuangan mulai dari jurnal, akun keuangan, hingga laporan-laporan terkait keuangan
+Package untuk mengelola data keuangan mulai dari jurnal, akun keuangan, hingga laporan-laporan terkait keuangan
 
-## Environment
+## Konfigurasi
 
 untuk menggunakan package ini dengan optimal, perhatikan poin-poin berikut ini :
 
