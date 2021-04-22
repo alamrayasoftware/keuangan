@@ -59,7 +59,7 @@ if ($reportJournal->getStatus() !== 'success') {
 $reportJournal = $reportJournal->getData();
 ```
 
-### Laporan Neraca Keuangan
+### Laporan Neraca
 
 ```php
 use ArsoftModules\Keuangan\Keuangan;
