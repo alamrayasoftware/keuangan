@@ -12,6 +12,7 @@ use ArsoftModules\Keuangan\Controllers\Reports\BalanceSheetController;
 use ArsoftModules\Keuangan\Controllers\Reports\IncomeStatementController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
 use ArsoftModules\Keuangan\Controllers\Reports\LedgerReportController;
+use ArsoftModules\Keuangan\Helpers\JournalHelper;
 use stdClass;
 
 class Keuangan {
@@ -29,6 +30,51 @@ class Keuangan {
     {
         return $this->errorMessage;
     }
+
+    /**
+     * @param array $journalDetails list journal-data
+     * @param string $date transaction date, format: Y-m-d
+     * @param string $transactionNota transaction number/nota
+     * @param string $note transaction note
+     * @param string $position position-id
+     * @param string $isMemorial option: 'Y', 'N'
+     */
+    public function storeJournal(
+        array $journalDetails,
+        string $date,
+        string $transactionNota,
+        string $note,
+        string $type,
+        string $position,
+        string $isMemorial = 'N'
+    ) {
+        $journalHelper = new JournalHelper();
+
+        $journal = $journalHelper->store(
+            $journalDetails,
+            $date,
+            $transactionNota,
+            $note,
+            $type,
+            $position,
+            $isMemorial
+        );
+
+        if ($journal['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $journal['message'];
+            return $this;
+        }
+
+        $tempData = new stdClass();
+        $tempData->transaction_nota = $transactionNota;
+        $tempData->date = $date;
+
+        $this->data = $tempData;
+
+        return $this;
+    }
+
 
     /**
      * @param string $position

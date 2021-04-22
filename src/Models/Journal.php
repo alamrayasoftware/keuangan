@@ -11,6 +11,17 @@ class Journal extends Model
     protected $table = 'dk_jurnal';
     protected $primaryKey = 'jr_id';
 
+    public $fillable = [
+        'jr_type',
+        'jr_comp',
+        'jr_ref',
+        'jr_nota_ref',
+        'jr_tanggal_trans',
+        'jr_keterangan',
+        'jr_memorial',
+        'jr_isproses'
+    ];
+    
     use Compoships;
 
     public function details()
