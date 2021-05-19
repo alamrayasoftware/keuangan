@@ -11,7 +11,7 @@ class Journal extends Model
     protected $table = 'dk_jurnal';
     protected $primaryKey = 'jr_id';
 
-    public $fillable = [
+    protected $fillable = [
         'jr_type',
         'jr_comp',
         'jr_ref',

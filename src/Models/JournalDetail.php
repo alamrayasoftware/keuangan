@@ -11,7 +11,7 @@ class JournalDetail extends Model
     protected $primaryKey = ['jrdt_jurnal', 'jrdt_nomor'];
     public $incrementing = false;
 
-    public $fillable = [
+    protected $fillable = [
         'jrdt_jurnal',
         'jrdt_nomor',
         'jrdt_akun',
