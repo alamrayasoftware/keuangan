@@ -36,6 +36,7 @@ class Keuangan {
      * @param string $date transaction date, format: Y-m-d
      * @param string $transactionNota transaction number/nota
      * @param string $note transaction note
+     * @param string $type journal type, exp: MK/TK/TM ( Mutasi Kas, Transaksi Kas, Transaksi Memorial )
      * @param string $position position-id
      * @param string $isMemorial option: 'Y', 'N'
      */
