@@ -76,6 +76,26 @@ class Keuangan {
         return $this;
     }
 
+    /**
+     * @param string $journalId journal-id
+     */
+    public function destroyJournal(string $journalId)
+    {
+        $journalHelper = new JournalHelper();
+
+        $destroyJournal = $journalHelper->destroy($journalId);
+
+        if ($destroyJournal['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $destroyJournal['message'];
+            return $this;
+        }
+
+        $this->data = null;
+
+        return $this;
+    }
+
 
     /**
      * @param string $position

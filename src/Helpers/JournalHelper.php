@@ -2,7 +2,6 @@
 
 namespace ArsoftModules\Keuangan\Helpers;
 
-use ArsoftModules\Keuangan\Models\BalanceAccount;
 use ArsoftModules\Keuangan\Models\FinanceAccount;
 use ArsoftModules\Keuangan\Models\FinancePeriods;
 use ArsoftModules\Keuangan\Models\Journal;
@@ -94,6 +93,42 @@ class JournalHelper {
 
         return [
             'status'  => 'success',
+        ];
+    }
+
+    /**
+     * @param string $journalId journal-id
+     */
+    public function destroy(string $journalId)
+    {
+        $journal = Journal::where('jr_id', $journalId)
+            ->with('details')
+            ->first();
+
+        if (!$journal) {
+            return [
+                'status' => 'error',
+                'message' => 'Journal data not found !'
+            ];
+        }
+
+        if ($journal->jr_isproses == '1') {
+            // balance the balance account
+            $balanceHelper = new BalanceHelper();
+            $balanceHelper = $balanceHelper->decrease($journal->details->toArray(), $journal->jr_tanggal_trans, $journal->jr_type);
+
+            if ($balanceHelper['status'] !== 'success') {
+                return [
+                    'status' => 'error',
+                    'message' => 'Failed to balance the balance account !',
+                ];
+            }
+        } 
+
+        $journal->delete();
+
+        return [
+            'status' => 'success'
         ];
     }
 }
