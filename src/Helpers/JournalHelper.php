@@ -2,12 +2,12 @@
 
 namespace ArsoftModules\Keuangan\Helpers;
 
+use ArsoftModules\Keuangan\Models\BalanceAccount;
 use ArsoftModules\Keuangan\Models\FinanceAccount;
 use ArsoftModules\Keuangan\Models\FinancePeriods;
 use ArsoftModules\Keuangan\Models\Journal;
 use ArsoftModules\Keuangan\Models\JournalDetail;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class JournalHelper {
     /**
@@ -15,6 +15,7 @@ class JournalHelper {
      * @param string $date transaction date, format: Y-m-d
      * @param string $transactionNota transaction number/nota
      * @param string $note transaction note
+     * @param string $type journal type, exp: MK/TK/TM ( Mutasi Kas, Transaksi Kas, Transaksi Memorial )
      * @param string $position position-id
      * @param string $isMemorial option: 'Y', 'N'
      */
@@ -47,7 +48,7 @@ class JournalHelper {
             'jr_tanggal_trans' => $date,
             'jr_keterangan' => $note,
             'jr_memorial' => $isMemorial,
-            'jr_isproses' => $isProcessed
+            'jr_isproses' => (string) $isProcessed
         ]);
         $newJournal->save();
 
@@ -77,12 +78,22 @@ class JournalHelper {
             ]);
         }
 
-        $newJournalDetail = new JournalDetail([
-            $tempJurnalDetails
-        ]);
-        $newJournalDetail->save();
+        JournalDetail::insert($tempJurnalDetails);
 
-dd($newJournal);
-        // return $finalTotal;
+        if ($isProcessed) {
+            $balanceHelper = new BalanceHelper();
+            $balanceHelper = $balanceHelper->balanceUsingJournal($journalDetails, $date, $type);
+
+            if ($balanceHelper['status'] !== 'success') {
+                return [
+                    'status' => 'error',
+                    'message' => 'Failed to balance the balance account !',
+                ];
+            }
+        }
+
+        return [
+            'status'  => 'success',
+        ];
     }
 }
