@@ -59,12 +59,7 @@ class BalanceHelper {
                 }
                 $balanceAccount->save();
 
-                BalanceAccount::where('as_akun', $detail['jrdt_akun'])
-                    ->whereDate('as_periode', '>', $date)
-                    ->update([
-                        'as_saldo_awal' => DB::raw('as_saldo_awal + ' . $calc),
-                        'as_saldo_akhir' => DB::raw('as_saldo_akhir + ' . $calc),
-                    ]);
+                $this->updateFutureBalanceAccount($detail['jrdt_akun'], $date, $calc);
             }
         }
 

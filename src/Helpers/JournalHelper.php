@@ -108,7 +108,7 @@ class JournalHelper {
         if (!$journal) {
             return [
                 'status' => 'error',
-                'message' => 'Journal data not found !'
+                'message' => 'Journal not found !'
             ];
         }
 
