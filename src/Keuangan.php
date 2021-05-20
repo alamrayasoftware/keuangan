@@ -13,6 +13,7 @@ use ArsoftModules\Keuangan\Controllers\Reports\IncomeStatementController;
 use ArsoftModules\Keuangan\Controllers\Reports\JournalController;
 use ArsoftModules\Keuangan\Controllers\Reports\LedgerReportController;
 use ArsoftModules\Keuangan\Helpers\JournalHelper;
+use ArsoftModules\Keuangan\Helpers\TransactionHelper;
 use stdClass;
 
 class Keuangan {
@@ -31,6 +32,58 @@ class Keuangan {
         return $this->errorMessage;
     }
 
+    // --------- start: transaction ---------
+    // --------------------------------------
+
+    /**
+     * @param string $date transaction date, format: Y-m-d
+     * @param string $position position-id
+     * @param string $note transaction note
+     * @param array-string $cashAccounts list of used cash accounts
+     * @param array-int $nominals list of transcation value each account
+     * @param array-string $detailTypes list of type each account ( opt: D/K )
+     * @param array-string $detailNotes list of notes
+     * @param array-string $cashflows list of cashflows status
+     */
+    public function storeCashTransaction(
+        string $date,
+        string $position,
+        string $note,
+        array $cashAccounts,
+        array $nominals,
+        array $detailTypes,
+        array $detailNotes,
+        array $cashflows
+    )
+    {
+        $transactionHelper = new TransactionHelper();
+
+        $transaction = $transactionHelper->storeCash(
+            $date,
+            $position,
+            $note,
+            $cashAccounts,
+            $nominals,
+            $detailTypes,
+            $detailNotes,
+            $cashflows
+        );
+
+        if ($transaction['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $transaction['message'];
+            return $this;
+        }
+
+        $this->data = null;
+
+        return $this;
+    }
+
+
+    // --------- start: journal ---------
+    // ----------------------------------
+    
     /**
      * @param array $journalDetails list journal-data
      * @param string $date transaction date, format: Y-m-d
@@ -96,7 +149,9 @@ class Keuangan {
         return $this;
     }
 
-
+    // --------- start: analysis ---------
+    // -----------------------------------
+    
     /**
      * @param string $position
      * @param string $startDate date_format: Y-m
@@ -310,6 +365,8 @@ class Keuangan {
         return $this;
     }
 
+    // --------- start: report ---------
+    // ---------------------------------
 
     /**
      * @param string $position position id
