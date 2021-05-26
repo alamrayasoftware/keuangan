@@ -83,6 +83,7 @@ class Keuangan {
     /**
      * @param string $position position-id
      * @param int $year year
+     * @param int $month month
      */
     public function showAllCashTransaction(
         string $position,
@@ -109,6 +110,29 @@ class Keuangan {
         return $this;
     }
 
+    /**
+     * @param string $transaction transaction-id
+     */
+    public function deleteCashTransaction(
+        string $transactionId
+    )
+    {
+        $transactionHelper = new TransactionHelper();
+
+        $transaction = $transactionHelper->deleteCash(
+            $transactionId
+        );
+
+        if ($transaction['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $transaction['message'];
+            return $this;
+        }
+
+        $this->data = null;
+
+        return $this;
+    }
     // --------- start: journal ---------
     // ----------------------------------
     

@@ -3,6 +3,7 @@
 namespace ArsoftModules\Keuangan\Helpers;
 
 use ArsoftModules\Keuangan\Models\FinancePeriods;
+use ArsoftModules\Keuangan\Models\Journal;
 use ArsoftModules\Keuangan\Models\Transaction;
 use ArsoftModules\Keuangan\Models\TransactionDetail;
 use Illuminate\Support\Carbon;
@@ -107,6 +108,7 @@ class TransactionHelper {
     /**
      * @param string $position position-id
      * @param int $year year
+     * @param int $month month
      */
     public function showAllCash(
         string $position,
@@ -128,6 +130,40 @@ class TransactionHelper {
         return [
             'status' => 'success',
             'data' => $allData,
+        ];
+    }
+
+    public function deleteCash(
+        string $transactionId
+    )
+    {
+        $transaction = Transaction::where('tr_id', $transactionId)->first();
+
+        if (!$transaction) {
+            return [
+                'status' => 'error',
+                'message' => 'Transaction data not found !'
+            ];
+        }
+
+        $journal = Journal::where('jr_nota_ref', $transaction->tr_nomor)->first();
+
+        if ($journal) {
+            $journalHelper = new JournalHelper();
+            $destroyJournal = $journalHelper->destroy($journal->jr_id);
+
+            if ($destroyJournal['status'] !== 'success') {
+                return [
+                    'status' => 'error',
+                    'message' => $destroyJournal['message']
+                ];
+            }
+        }
+
+        $transaction->delete();
+
+        return [
+            'status' => 'success'
         ];
     }
 
