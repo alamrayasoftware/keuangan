@@ -45,7 +45,7 @@ class Keuangan {
      * @param array-string $detailNotes list of notes
      * @param array-string $cashflows list of cashflows status
      */
-    public function storeCashTransaction(
+    public function storeTransaction(
         string $date,
         string $position,
         string $note,
@@ -58,7 +58,9 @@ class Keuangan {
     {
         $transactionHelper = new TransactionHelper();
 
-        $transaction = $transactionHelper->storeCash(
+        $transactionType = 'TK';
+        $transaction = $transactionHelper->storeTransaction(
+            $transactionType,
             $date,
             $position,
             $note,
@@ -113,13 +115,13 @@ class Keuangan {
     /**
      * @param string $transaction transaction-id
      */
-    public function deleteCashTransaction(
+    public function deleteTransaction(
         string $transactionId
     )
     {
         $transactionHelper = new TransactionHelper();
 
-        $transaction = $transactionHelper->deleteCash(
+        $transaction = $transactionHelper->deleteTransaction(
             $transactionId
         );
 

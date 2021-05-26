@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 class TransactionHelper {
 
     /**
+     * @param string $transactionType transaction type, opt:  TK/TM/MK
      * @param string $date transaction date, format: Y-m-d
      * @param string $position position-id
      * @param string $note transaction note
@@ -21,7 +22,8 @@ class TransactionHelper {
      * @param array-string $detailNotes list of notes
      * @param array-string $cashflows list of cashflows status
      */
-    public function storeCash(
+    public function storeTransaction(
+        string $transactionType,
         string $date,
         string $position,
         string $note,
@@ -46,7 +48,6 @@ class TransactionHelper {
             ];
         }
 
-        $transactionType = 'TK';
         $transactionNumber = $this->generateNumber($date, $transactionType);
 
         $transaction = new Transaction();
@@ -61,24 +62,33 @@ class TransactionHelper {
         $journalDetails = [];
 
         for ($i=0; $i < count($cashAccounts); $i++) { 
-            array_push($transactionDetails, [
+            $tempTransactionDetails = [
                 'trdt_transaksi' => $transaction->tr_id,
                 'trdt_nomor' => ($i + 1),
                 'trdt_akun' => $cashAccounts[$i],
                 'trdt_value' => $nominals[$i],
                 'trdt_dk' => $detailTypes[$i],
                 'trdt_keterangan' => $detailNotes[$i],
-                'trdt_cashflow' => $cashflows[$i],
-            ]);
-            array_push($journalDetails, 
-            [
-                'jrdt_nomor' => 1,
+            ];
+            if ($transactionType === 'TK') {
+                $tempTransactionDetails += [
+                    'trdt_cashflow' => $cashflows[$i],
+                ];
+            }
+            array_push($transactionDetails, $tempTransactionDetails);
+
+            $tempJournalDetails = [
                 'jrdt_akun' => $cashAccounts[$i],
                 'jrdt_value' => $nominals[$i],
                 'jrdt_dk' => $detailTypes[$i],
                 'jrdt_keterangan' => $detailNotes[$i],
-                'jrdt_cashflow' => $cashflows[$i],
-            ]);
+            ];
+            if ($transactionType === 'TK') {
+                $tempJournalDetails += [
+                    'jrdt_cashflow' => $cashflows[$i],
+                ];
+            }
+            array_push($journalDetails, $tempJournalDetails);
         }
 
         TransactionDetail::insert($transactionDetails);
@@ -133,7 +143,10 @@ class TransactionHelper {
         ];
     }
 
-    public function deleteCash(
+    /**
+     * @param string $transactionId transaction id
+     */
+    public function deleteTransaction(
         string $transactionId
     )
     {
@@ -167,14 +180,6 @@ class TransactionHelper {
         ];
     }
 
-    public function storeNonCash()
-    {
-    }
-
-    public function storeCashMutation()
-    {
-    }
-
     /**
      * @param string $date transaction date, format: Y-m-d
      * @param string $transactionType transaction type, opt: TK/TM/MK
@@ -191,7 +196,7 @@ class TransactionHelper {
             ->latest()
             ->first();
         
-        $number = ($lastNumber) ? ($lastNumber->number + 1) : 1;
+        $number = ($lastNumber) ? ((int) $lastNumber->number + 1) : 1;
         $generatedNumber = $transactionType . '-' . $date->format('Y') . '/' . $date->format('m') . '/' . $date->format('d') . '/' . $number;
         return $generatedNumber;
     }
