@@ -104,6 +104,33 @@ class TransactionHelper {
         ];
     }
 
+    /**
+     * @param string $position position-id
+     * @param int $year year
+     */
+    public function showAllCash(
+        string $position,
+        int $year = null,
+        int $month = null
+    )
+    {
+        $allData = Transaction::where('tr_comp', $position)
+            ->with(['details' => function ($q) {
+                $q->with('financeAccount');
+            }])
+            ->filterType('TK');
+        
+        ($year) ? $allData = $allData->filterYear($year) : null;
+        ($month) ? $allData = $allData->filterMonth($month) : null;
+
+        $allData = $allData->get();
+
+        return [
+            'status' => 'success',
+            'data' => $allData,
+        ];
+    }
+
     public function storeNonCash()
     {
     }

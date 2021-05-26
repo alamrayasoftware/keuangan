@@ -32,8 +32,8 @@ class Keuangan {
         return $this->errorMessage;
     }
 
-    // --------- start: transaction ---------
-    // --------------------------------------
+    // --------- start: transaction cash ---------
+    // -------------------------------------------
 
     /**
      * @param string $date transaction date, format: Y-m-d
@@ -80,6 +80,34 @@ class Keuangan {
         return $this;
     }
 
+    /**
+     * @param string $position position-id
+     * @param int $year year
+     */
+    public function showAllCashTransaction(
+        string $position,
+        int $year = null,
+        int $month = null
+    )
+    {
+        $transactionHelper = new TransactionHelper();
+
+        $transaction = $transactionHelper->showAllCash(
+            $position,
+            $year,
+            $month
+        );
+
+        if ($transaction['status'] !== 'success') {
+            $this->status = 'error';
+            $this->errorMessage = $transaction['message'];
+            return $this;
+        }
+
+        $this->data = $transaction['data'];
+
+        return $this;
+    }
 
     // --------- start: journal ---------
     // ----------------------------------

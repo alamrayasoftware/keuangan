@@ -27,4 +27,9 @@ class TransactionDetail extends Model
     {
         return $this->belongsTo('ArsoftModules\Keuangan\Models\Transaction', 'trdt_transaksi', 'tr_id');
     }
+
+    public function financeAccount()
+    {
+        return $this->belongsTo('ArsoftModules\Keuangan\Models\FinanceAccount', 'trdt_akun', 'ak_id');
+    }
 }
