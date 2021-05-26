@@ -84,19 +84,22 @@ class Keuangan {
 
     /**
      * @param string $position position-id
+     * @param string $transactionType transaction type, opt:  TK/TM/MK
      * @param int $year year
      * @param int $month month
      */
-    public function showAllCashTransaction(
+    public function showAllTransaction(
         string $position,
+        string $transactionType = null,
         int $year = null,
         int $month = null
     )
     {
         $transactionHelper = new TransactionHelper();
 
-        $transaction = $transactionHelper->showAllCash(
+        $transaction = $transactionHelper->showAllTransaction(
             $position,
+            $transactionType,
             $year,
             $month
         );

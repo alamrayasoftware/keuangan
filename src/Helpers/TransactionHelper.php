@@ -117,11 +117,13 @@ class TransactionHelper {
 
     /**
      * @param string $position position-id
+     * @param string $transactionType transaction type, opt:  TK/TM/MK
      * @param int $year year
      * @param int $month month
      */
-    public function showAllCash(
+    public function showAllTransaction(
         string $position,
+        string $transactionType = null,
         int $year = null,
         int $month = null
     )
@@ -129,9 +131,9 @@ class TransactionHelper {
         $allData = Transaction::where('tr_comp', $position)
             ->with(['details' => function ($q) {
                 $q->with('financeAccount');
-            }])
-            ->filterType('TK');
+            }]);
         
+        ($transactionType) ? $allData = $allData->filterType($transactionType) : null;
         ($year) ? $allData = $allData->filterYear($year) : null;
         ($month) ? $allData = $allData->filterMonth($month) : null;
 
